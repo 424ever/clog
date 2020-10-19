@@ -1,0 +1,30 @@
+CLOG
+
+A simple logging library for C
+
+I. Installation
+
+make
+sudo make install
+
+configuration is done in the Makefile
+ * C compiler is set in the `CC` variable
+ * Installation directory is set with the `PREFIX` variable
+
+II. Usage
+The library provides the following log levels:
+
+ DEBUG
+ INFO
+ WARN
+ ERROR
+ FATAL
+
+There are constants available for these log levels with the naming CLOG_*
+
+The clog_init() function should be called on programm start. It sets the
+minimum required log level to write and the stream to which the log should be
+written. The programm has to open and close the stream provided.
+To write a log you can either call the clog_log() function or use the
+clog_debug(),... wrappers.
+
