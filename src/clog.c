@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "clog.h"
 
@@ -24,60 +25,92 @@ FILE *stream;
 	_stream = stream;
 }
 
-extern int clog_log (level, tag, message)
-int level;
+static int vlog (level, tag, format, args)
+int         level;
 const char *tag;
-const char *message;
+const char *format;
+va_list     args;
 {
+	size_t nbytes;
+	time_t now;
+	char *nowstr;
+
 	if (level < 0 || level >= sizeof (LEVEL_NAMES) / sizeof (LEVEL_NAMES[0]))
 		return (0);
 	if (level < _min_level)
 		return (0);
 
-	time_t now;
 	time (&now);
-	char *nowstr = ctime (&now);
+	nowstr = ctime (&now);
 	nowstr[strlen(nowstr) - 1] = '\0';
 
-	return fprintf (_stream, "%-5s %s [%s] %s\n",
+	nbytes =  fprintf (_stream, "%-5s %s [%s] ",
 				  LEVEL_NAMES[level],
 				  nowstr,
-				  tag,
-				  message);
+				  tag);
+	nbytes += vfprintf (_stream, format, args);
+	fputc ('\n', _stream);
+	return nbytes;
+
 }
 
-extern int clog_debug (tag, message)
-const char *tag;
-const char *message;
+int clog_log (int level, const char *tag, const char *format, ...)
 {
-	return clog_log (CLOG_DEBUG, tag, message);
+	size_t nbytes;
+	va_list args;
+	va_start (args, format);
+	nbytes = vlog (level, tag, format, args);
+	va_end (args);
+	return nbytes;
 }
 
-extern int clog_info (tag, message)
-const char *tag;
-const char *message;
+int clog_debug (const char *tag, const char *format, ...)
 {
-	return clog_log (CLOG_INFO, tag, message);
+	size_t nbytes;
+	va_list args;
+	va_start (args, format);
+	nbytes = vlog (CLOG_DEBUG, tag, format, args);
+	va_end (args);
+	return nbytes;
 }
 
-extern int clog_warn (tag, message)
-const char *tag;
-const char *message;
+int clog_info (const char *tag, const char *format, ...)
 {
-	return clog_log (CLOG_WARN, tag, message);
+	size_t nbytes;
+	va_list args;
+	va_start (args, format);
+	nbytes = vlog (CLOG_INFO, tag, format, args);
+	va_end (args);
+	return nbytes;
 }
 
-extern int clog_error (tag, message)
-const char *tag;
-const char *message;
+int clog_warn (const char *tag, const char *format, ...)
 {
-	return clog_log (CLOG_ERROR, tag, message);
+	size_t nbytes;
+	va_list args;
+	va_start (args, format);
+	nbytes = vlog (CLOG_WARN, tag, format, args);
+	va_end (args);
+	return nbytes;
 }
 
-extern int clog_fatal (tag, message)
-const char *tag;
-const char *message;
+int clog_error (const char *tag, const char *format, ...)
 {
-	return clog_log (CLOG_FATAL, tag, message);
+	size_t nbytes;
+	va_list args;
+	va_start (args, format);
+	nbytes = vlog (CLOG_ERROR, tag, format, args);
+	va_end (args);
+	return nbytes;
+}
+
+int clog_fatal (const char *tag, const char *format, ...)
+{
+	size_t nbytes;
+	va_list args;
+	va_start (args, format);
+	nbytes = vlog (CLOG_FATAL, tag, format, args);
+	va_end (args);
+	return nbytes;
 }
 
