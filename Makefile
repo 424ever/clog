@@ -1,3 +1,5 @@
+VERSION = 0.1
+
 IDIR = include
 CC = gcc
 CFLAGS = -I$(IDIR) -Wall
@@ -19,8 +21,9 @@ libclog.so: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS) $(LINKFLAGS) $(LIBS)
 
 install: libclog.so
-	cp include/* $(PREFIX)/include
-	cp libclog.so $(PREFIX)/lib
+	install include/* $(PREFIX)/include
+	install libclog.so $(PREFIX)/lib/libclog.$(VERSION).so
+	ln -sf libclog.$(VERSION).so $(PREFIX)/lib/libclog.so
 
 $(OBJDIR):
 	mkdir $@
