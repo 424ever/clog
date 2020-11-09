@@ -4,11 +4,11 @@
 /* Constants */
 
 /* Log levels */
-extern const int CLOG_DEBUG = 0;
-extern const int CLOG_INFO = 1;
-extern const int CLOG_WARN = 2;
-extern const int CLOG_ERROR = 3;
-extern const int CLOG_FATAL = 4;
+#define CLOG_DEBUG 0
+#define CLOG_INFO 1
+#define CLOG_WARN 2
+#define CLOG_ERROR 3
+#define CLOG_FATAL 4
 
 extern void clog_init (int min_level, FILE *stream);
 
