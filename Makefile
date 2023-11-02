@@ -2,7 +2,7 @@ VERSION = 0.1
 
 IDIR = include
 CC = gcc
-CFLAGS = -I$(IDIR) -Wall -ansi -Werror
+CFLAGS = -I$(IDIR) -Wall -ansi -Werror -fPIC
 LINKFLAGS = -shared
 PREFIX = /usr/local
 
